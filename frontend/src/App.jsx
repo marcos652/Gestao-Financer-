@@ -18,7 +18,7 @@ function App() {
 
   useEffect(() => {
     const fetchTransactions = () => {
-      fetch('http://localhost:8000/api/transactions')
+      fetch('/api/transactions')
         .then(res => res.json())
         .then(data => {
           if(data) {
