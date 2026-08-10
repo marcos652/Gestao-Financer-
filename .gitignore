@@ -1,0 +1,15 @@
+# Dependências e ambientes virtuais
+node_modules/
+__pycache__/
+*.pyc
+.env
+
+# Banco de dados local (no Railway usaremos variáveis de ambiente)
+finance.db
+
+# Logs
+*.log
+
+# Vite build
+frontend/dist/
+frontend/node_modules/

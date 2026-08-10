@@ -1,0 +1,23 @@
+{
+  "name": "backend-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "start.js",
+  "scripts": {
+    "start": "node start.js",
+    "server": "node server.js",
+    "robot": "node imap_listener.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "imap": "^0.8.19",
+    "mailparser": "^3.9.15"
+  }
+}
