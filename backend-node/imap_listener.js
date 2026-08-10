@@ -1,7 +1,7 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') });
 const Imap = require('imap');
 const { simpleParser } = require('mailparser');
-const db = require('./database');
+const { transactionsCollection } = require('./database');
 const { parseEmailBody } = require('./parser');
 
 const IMAP_CONFIG = {
@@ -62,11 +62,20 @@ function checkInbox() {
 
             if (result.amount > 0) {
               const now = new Date().toISOString();
-              const stmt = db.prepare(
-                'INSERT INTO transactions (date, amount, merchant, category, email_body) VALUES (?, ?, ?, ?, ?)'
-              );
-              stmt.run(now, result.amount, result.merchant, result.category, body.substring(0, 500));
-              console.log(`[+] SUCESSO! Transação salva: ${result.merchant} - R$ ${result.amount}`);
+              transactionsCollection
+                .add({
+                  date: now,
+                  amount: result.amount,
+                  merchant: result.merchant,
+                  category: result.category,
+                  email_body: body.substring(0, 500),
+                })
+                .then(() => {
+                  console.log(`[+] SUCESSO! Transação salva: ${result.merchant} - R$ ${result.amount}`);
+                })
+                .catch((err) => {
+                  console.error('Erro ao salvar transação no Firestore:', err);
+                });
             } else {
               console.log('[-] E-mail do Nubank sem valor válido identificado.');
             }

@@ -1,20 +1,16 @@
-const Database = require('better-sqlite3');
-const path = require('path');
+const admin = require('firebase-admin');
 
-const DB_PATH = path.join(__dirname, '..', 'finance.db');
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+    }),
+  });
+}
 
-const db = new Database(DB_PATH);
+const db = admin.firestore();
+const transactionsCollection = db.collection('transactions');
 
-// Garante que a tabela de transações existe
-db.exec(`
-  CREATE TABLE IF NOT EXISTS transactions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    date TEXT NOT NULL,
-    amount REAL NOT NULL,
-    merchant TEXT NOT NULL,
-    category TEXT,
-    email_body TEXT
-  )
-`);
-
-module.exports = db;
+module.exports = { db, transactionsCollection };
